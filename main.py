@@ -1,5 +1,8 @@
+from typing import List, Optional
+
 from fastapi import FastAPI, HTTPException
 from fastapi import status
+from models import User
 app = FastAPI()
 
 users = {
@@ -32,6 +35,14 @@ async def get_user(user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail='User not found'
         )
+
+
+@app.post('/', status_code=status.HTTP_201_CREATED)
+async def create_user(user: User):
+    next_id: int = len(users) + 1
+    users[next_id] = user
+    del user.id
+    return user
 
 
 if __name__ == '__main__':
